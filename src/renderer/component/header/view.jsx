@@ -21,7 +21,7 @@ export const Header = props => {
           circle
           onClick={back}
           disabled={isBackDisabled}
-          icon="icon-arrow-left"
+          icon="arrow-left"
           title={__("Back")}
         />
 
@@ -30,15 +30,14 @@ export const Header = props => {
           circle
           onClick={forward}
           disabled={isForwardDisabled}
-          icon="icon-arrow-right"
+          icon="arrow-right"
           title={__("Forward")}
         />
 
         <Link
           alt
-          circle
           onClick={() => navigate("/discover")}
-          icon="icon-home"
+          icon="home"
           title={__("Discover Content")}
         />
       </div>
@@ -47,12 +46,26 @@ export const Header = props => {
 
       <div className="header__actions-right">
         <Link
-          link
+          inverse
           onClick={() => navigate("/wallet")}
-          icon="icon-user"
+          icon="user"
           label={<span>You have {balance} LBC</span>}
           title={__("Wallet")}
         />
+
+        <Link
+          onClick={() => navigate("/publish")}
+          icon="cloud-upload"
+          label={__("Publish")}
+        />
+
+        <Link
+          alt
+          onClick={() => navigate("/settings")}
+          icon="gear"
+          title={__("Help")}
+        />
+
         <Link
           alt
           onClick={() => navigate("/help")}
@@ -68,12 +81,7 @@ export const Header = props => {
 //
 // </div>
 // <div className="header__item">
-//   <Link
-//     onClick={() => navigate("/publish")}
-//     button="primary button--flat"
-//     icon="icon-upload"
-//     label={__("Publish")}
-//   />
+
 // </div>
 // <div className="header__item">
 //   <Link

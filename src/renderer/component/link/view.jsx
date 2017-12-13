@@ -18,6 +18,7 @@ const Link = props => {
     className,
     // span,
     link,
+    inverse,
     block,
     alt,
     circle,
@@ -26,11 +27,11 @@ const Link = props => {
 
   const combinedClassName = classnames(
     {
-      btn: !link,
+      btn: true, // add way to disable this for links
+      "btn--primary": !alt,
       "btn--alt": alt,
-      "btn--link": link,
+      "btn--inverse": inverse,
       "btn--disabled": disabled,
-      "btn--block": block,
       "btn--circle": circle,
       "btn--flat": flat,
     },
