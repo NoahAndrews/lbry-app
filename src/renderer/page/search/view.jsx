@@ -3,13 +3,14 @@ import lbryuri from "lbryuri";
 import FileTile from "component/fileTile";
 import FileListSearch from "component/fileListSearch";
 import { ToolTip } from "component/tooltip.js";
+import Page from "component/common/page";
 
 class SearchPage extends React.PureComponent {
   render() {
     const { query } = this.props;
 
     return (
-      <main className="main--single-column">
+      <Page title="Search Results">
         {lbryuri.isValid(query) ? (
           <section className="section-spaced">
             <h3 className="card-row__header">
@@ -41,7 +42,7 @@ class SearchPage extends React.PureComponent {
           </h3>
           <FileListSearch query={query} />
         </section>
-      </main>
+      </Page>
     );
   }
 }

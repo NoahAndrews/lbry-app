@@ -24,7 +24,7 @@
 }
 
 .header__wunderbar {
-  width: 335px;
+  width: 325px;
   height: 100%;
   border-left: 1px solid #eee;
   position: relative;
@@ -34,7 +34,31 @@
     left: 10px;
     top: 26px; //hacked for icon centering
   }
+
+  .header__wunderbar-search-results {
+    position: absolute;
+    top: var(--header-height);
+    width: 100%;
+    background: var(--header-bg);
+    box-shadow: var(--box-shadow-layer);
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+
+      // always highlighted link to lbry uri
+      &.wunderbar__uri {
+        background-color: #a3ffb0
+      }
+    }
+  }
 }
+
 
 .wunderbar__input {
   width: 100%;
