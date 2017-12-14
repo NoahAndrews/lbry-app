@@ -116,7 +116,7 @@ class WunderBar extends React.PureComponent {
           "header__wunderbar--active": isActive,
         })}
       >
-        <Icon fixed icon="search" />
+        <Icon fixed icon="icon-search" />
         <input
           className="wunderbar__input"
           type="search"
