@@ -2,15 +2,20 @@ import React from "react";
 import { connect } from "react-redux";
 import lbryuri from "lbryuri.js";
 import {
+  _selectState as selectSearch,
   selectWunderBarAddress,
-  selectWunderBarIcon,
 } from "redux/selectors/search";
 import { doNavigate } from "redux/actions/navigation";
+import {
+  updateSearchQuery,
+  toggleActiveSearch,
+  toggleActiveSearchTyping,
+} from "redux/actions/search";
 import Wunderbar from "./view";
 
 const select = state => ({
+  ...selectSearch(state),
   address: selectWunderBarAddress(state),
-  icon: selectWunderBarIcon(state),
 });
 
 const perform = dispatch => ({
@@ -19,6 +24,10 @@ const perform = dispatch => ({
     dispatch(
       doNavigate("/show", { uri: lbryuri.normalize(query), ...extraParams })
     ),
+  updateSearchQuery: query => dispatch(updateSearchQuery(query)),
+  toggleActiveSearch: isActive => dispatch(toggleActiveSearch(isActive)),
+  toggleActiveSearchTyping: isTyping =>
+    dispatch(toggleActiveSearchTyping(isTyping)),
 });
 
 export default connect(select, perform)(Wunderbar);

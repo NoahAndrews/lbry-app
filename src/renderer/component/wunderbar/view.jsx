@@ -6,7 +6,7 @@ import classnames from "classnames";
 
 // type Props = {
 //   onSearch: () => void,
-//   onSubmit: () => void
+//   onSubmit: () => void,
 // }
 
 class WunderBar extends React.PureComponent {
@@ -21,41 +21,50 @@ class WunderBar extends React.PureComponent {
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
-
-    this.state = {
-      value: "",
-      isSearchPending: false,
-      isActive: false,
-    };
   }
 
   componentWillUnmount() {
     if (this._userTypingTimer) {
       clearTimeout(this._userTypingTimer);
     }
+  }
 
-    this._input = null;
+  onKeyPress(event) {
+    const {
+      searchQuery,
+      searchUri,
+      onSearch,
+      onSubmit,
+      toggleActiveSearch,
+    } = this.props;
+    // user pressed enter
+    if (event.charCode === 13 && searchQuery) {
+      this._input.blur();
+      toggleActiveSearch(false);
+      return searchUri ? onSubmit(searchUri) : onSearch(searchQuery);
+    }
+
+    // handle down/up keys to navigate directly to suggested search result
   }
 
   onChange(event) {
+    const {
+      updateSearchQuery,
+      isActivelySearching,
+      toggleActiveSearchTyping,
+    } = this.props;
+
+    if (!isActivelySearching) {
+      toggleActiveSearchTyping(true);
+    }
+
     const { value } = event.target;
 
     if (this._userTypingTimer) {
       clearTimeout(this._userTypingTimer);
     }
 
-    let newState = { value };
-
-    let uri;
-    try {
-      uri = lbryuri.normalize(value);
-      newState.uri = uri;
-    } catch (e) {
-      // search term isn't a valid uri (has spaces in it / other stuff)
-      newState.uri = "";
-    }
-
-    this.setState(newState);
+    updateSearchQuery(value);
 
     this._userTypingTimer = setTimeout(() => {
       // pull suggested search results/autocomplete value (same api call for both?)
@@ -63,53 +72,38 @@ class WunderBar extends React.PureComponent {
   }
 
   onFocus() {
-    const { value } = this.state;
+    const { query, toggleActiveSearch } = this.props;
 
-    if (value) {
+    if (query) {
       // will need to do something for suggested results here
     }
 
-    this.setState({ isActive: true });
+    toggleActiveSearch(true);
   }
 
   onBlur() {
+    const { toggleActiveSearch } = this.props;
+
     if (this._userTypingTimer) {
       clearTimeout(this._userTypingTimer);
     }
 
-    this.setState({ isActive: false });
-  }
-
-  componentDidUpdate() {
-    // if (this._input) {
-    //   const start = this._input.selectionStart,
-    //     end = this._input.selectionEnd;
-    //
-    //   this._input.value = this.state.address; //this causes cursor to go to end of input
-    //
-    //   this._input.setSelectionRange(start, end);
-    //
-    //   if (this._focusPending) {
-    //     this._input.select();
-    //     this._focusPending = false;
-    //   }
-    // }
-  }
-
-  onKeyPress(event) {
-    const { value, uri } = this.state;
-    const { onSearch, onSubmit } = this.props;
-
-    // user pressed enter
-    if (event.charCode === 13 && value) {
-      this.setState({ isActive: false });
-      this._input.blur();
-      return uri ? onSubmit(uri) : onSearch(value);
-    }
+    toggleActiveSearch(false);
   }
 
   render() {
-    const { value, uri, isActive, icon } = this.state;
+    const {
+      searchQuery,
+      searchUri,
+      isActive,
+      address,
+      isActivelySearching,
+    } = this.props;
+
+    const wunderbarValue = isActivelySearching
+      ? searchQuery
+      : searchQuery || address;
+    console.log("render", this.props);
     return (
       <div
         className={classnames("header__wunderbar", {
@@ -125,13 +119,15 @@ class WunderBar extends React.PureComponent {
           onBlur={this.onBlur}
           onChange={this.onChange}
           onKeyPress={this.onKeyPress}
-          value={value}
+          value={wunderbarValue}
           placeholder={__("Search for videos, movies, and more")}
         />
         <div className="header__wunderbar-search-results">
-          {value &&
+          {searchQuery &&
             isActive && (
-              <ul>{uri && <li className="wunderbar__uri">{uri}</li>}</ul>
+              <ul>
+                {searchUri && <li className="wunderbar__uri">{searchUri}</li>}
+              </ul>
             )}
         </div>
       </div>

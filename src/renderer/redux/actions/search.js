@@ -62,3 +62,27 @@ export function doSearch(rawQuery) {
     }
   };
 }
+
+export const updateSearchQuery = searchQuery => {
+  let searchUri;
+  try {
+    searchUri = lbryuri.normalize(searchQuery);
+  } catch (e) {
+    // search query isn't a valid uri
+  }
+
+  return {
+    type: types.UPDATE_SEARCH_QUERY,
+    data: { searchQuery, searchUri },
+  };
+};
+
+export const toggleActiveSearch = isActive => ({
+  type: types.TOGGLE_ACTIVE_SEARCH,
+  data: isActive,
+});
+
+export const toggleActiveSearchTyping = isActive => ({
+  type: types.TOGGLE_ACTIVE_SEARCH_TYPING,
+  data: isActive,
+});

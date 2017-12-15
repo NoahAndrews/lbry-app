@@ -5,6 +5,7 @@ import FileTile from "component/fileTile";
 import ReactPaginate from "react-paginate";
 import Link from "component/link";
 import SubscribeButton from "component/subscribeButton";
+import Page from "component/common/page";
 
 class ChannelPage extends React.PureComponent {
   componentDidMount() {
@@ -73,7 +74,7 @@ class ChannelPage extends React.PureComponent {
     }
 
     return (
-      <div>
+      <Page title="Channel">
         <section className="card">
           <div className="card__inner">
             <div className="card__title-identity">
@@ -110,7 +111,7 @@ class ChannelPage extends React.PureComponent {
               containerClassName="pagination"
             />
           )}
-      </div>
+      </Page>
     );
   }
 }

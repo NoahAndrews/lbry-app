@@ -12,6 +12,7 @@ import DateTime from "component/dateTime";
 import * as icons from "constants/icons";
 import Link from "component/link";
 import SubscribeButton from "component/subscribeButton";
+import Page from "component/common/page";
 
 class FilePage extends React.PureComponent {
   componentDidMount() {
@@ -77,50 +78,55 @@ class FilePage extends React.PureComponent {
     }
 
     return (
-      <section className={"card " + (obscureNsfw ? "card--obscured " : "")}>
-        <div className="show-page-media">
-          {isPlayable ? (
-            <Video className="video-embedded" uri={uri} />
-          ) : metadata && metadata.thumbnail ? (
-            <Thumbnail src={metadata.thumbnail} />
-          ) : (
-            <Thumbnail />
-          )}
-        </div>
-        <div className="card__inner">
-          {(!tab || tab === "details") && (
-            <div>
-              {" "}
-              <div className="card__title-identity">
-                {!fileInfo || fileInfo.written_bytes <= 0 ? (
-                  <span style={{ float: "right" }}>
-                    <FilePrice uri={lbryuri.normalize(uri)} />
-                    {isRewardContent && (
-                      <span>
-                        {" "}
-                        <Icon icon={icons.FEATURED} />
-                      </span>
-                    )}
-                  </span>
-                ) : null}
-                <h1>{title}</h1>
-                <div className="card__subtitle card--file-subtitle">
-                  <UriIndicator uri={uri} link={true} />
-                  <span className="card__publish-date">
-                    Published on{" "}
-                    <DateTime block={height} show={DateTime.SHOW_DATE} />
-                  </span>
+      <Page title="File">
+        <section className={"card " + (obscureNsfw ? "card--obscured " : "")}>
+          <div className="show-page-media">
+            {isPlayable ? (
+              <Video className="video-embedded" uri={uri} />
+            ) : metadata && metadata.thumbnail ? (
+              <Thumbnail src={metadata.thumbnail} />
+            ) : (
+              <Thumbnail />
+            )}
+          </div>
+          <div className="card__inner">
+            {(!tab || tab === "details") && (
+              <div>
+                {" "}
+                <div className="card__title-identity">
+                  {!fileInfo || fileInfo.written_bytes <= 0 ? (
+                    <span style={{ float: "right" }}>
+                      <FilePrice uri={lbryuri.normalize(uri)} />
+                      {isRewardContent && (
+                        <span>
+                          {" "}
+                          <Icon icon={icons.FEATURED} />
+                        </span>
+                      )}
+                    </span>
+                  ) : null}
+                  <h1>{title}</h1>
+                  <div className="card__subtitle card--file-subtitle">
+                    <UriIndicator uri={uri} link={true} />
+                    <span className="card__publish-date">
+                      Published on{" "}
+                      <DateTime block={height} show={DateTime.SHOW_DATE} />
+                    </span>
+                  </div>
                 </div>
+                <SubscribeButton
+                  uri={subscriptionUri}
+                  channelName={channelName}
+                />
+                <FileDetails uri={uri} />
               </div>
-              <SubscribeButton uri={subscriptionUri} channelName={channelName} />
-              <FileDetails uri={uri} />
-            </div>
-          )}
-          {tab === "tip" && (
-            <WalletSendTip claim_id={claim.claim_id} uri={uri} />
-          )}
-        </div>
-      </section>
+            )}
+            {tab === "tip" && (
+              <WalletSendTip claim_id={claim.claim_id} uri={uri} />
+            )}
+          </div>
+        </section>
+      </Page>
     );
   }
 }
