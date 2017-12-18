@@ -30,6 +30,7 @@ const perform = dispatch => ({
   toggleActiveSearchTyping: isTyping =>
     dispatch(toggleActiveSearchTyping(isTyping)),
   getSearchSuggestions: query => dispatch(getSearchSuggestions(query)),
+  doNavigate: (path, params) => dispatch(doNavigate(path, params)),
 });
 
 export default connect(select, perform)(Wunderbar);

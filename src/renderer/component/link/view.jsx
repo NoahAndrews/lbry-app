@@ -24,6 +24,7 @@ const Link = props => {
     circle,
     flat,
     noStyle,
+    ...otherProps
   } = props;
 
   const combinedClassName = classnames(
@@ -75,7 +76,12 @@ const Link = props => {
       {content}
     </a>
   ) : (
-    <button className={combinedClassName} onClick={onClick} disabled={disabled}>
+    <button
+      className={combinedClassName}
+      onClick={onClick}
+      disabled={disabled}
+      {...otherProps}
+    >
       {content}
     </button>
   );

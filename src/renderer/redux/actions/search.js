@@ -89,7 +89,10 @@ export const getSearchSuggestions = query => dispatch => {
     .then(suggestions => {
       return dispatch({
         type: actions.GET_SEARCH_SUGGESTIONS_SUCCESS,
-        data: suggestions.slice(0, 5),
+        data: suggestions.slice(0, 5).map(suggestion => {
+          const hasSpaces = suggestion.indexOf(" ") !== -1;
+          return hasSpaces ? suggestion : `lbry://${suggestion}`;
+        }),
       });
     })
     .catch(err =>

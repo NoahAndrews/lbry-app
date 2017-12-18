@@ -91,7 +91,7 @@ class WunderBar extends React.PureComponent {
     if (this._userTypingTimer) {
       clearTimeout(this._userTypingTimer);
     }
-    debugger;
+    // debugger;
     toggleActiveSearch(false);
   }
 
@@ -104,6 +104,7 @@ class WunderBar extends React.PureComponent {
       isActivelySearching,
       searchingForSuggestions,
       suggestions,
+      doNavigate,
     } = this.props;
 
     const wunderbarValue = isActivelySearching
@@ -136,17 +137,47 @@ class WunderBar extends React.PureComponent {
               <ul>
                 {searchUri && (
                   <li key="-2">
-                    <Link noStyle navigate="/show" params={{ uri: searchUri }}>
-                      {searchUri}
-                    </Link>
+                    <Link
+                      noStyle
+                      label={searchUri}
+                      onMouseDown={() => {
+                        doNavigate("/show", { uri: searchUri });
+                      }}
+                    />
                   </li>
                 )}
-                {searchUri && <li key="-1">View search results</li>}
+                {searchQuery && (
+                  <li key="-1">
+                    <Link
+                      noStyle
+                      label={__("View search results")}
+                      onMouseDown={() => {
+                        doNavigate("/search", { query: searchQuery });
+                      }}
+                    />
+                  </li>
+                )}
                 {searchingForSuggestions && <li key="0">Searching...</li>}
                 {!searchingForSuggestions &&
                   !!suggestions.length &&
                   suggestions.map((suggestion, index) => {
-                    return <li key={index}>{suggestion}</li>;
+                    return (
+                      <li key={index}>
+                        <Link
+                          noStyle
+                          label={suggestion}
+                          onMouseDown={() => {
+                            if (suggestion.startsWith("lbry://")) {
+                              console.log("lbry uri");
+                              doNavigate("/show", { uri: suggestion });
+                              return;
+                            }
+
+                            doNavigate("/search", { query: suggestion });
+                          }}
+                        />
+                      </li>
+                    );
                   })}
               </ul>
             )}
