@@ -1,9 +1,15 @@
-import * as types from "constants/action_types";
+import * as actions from "constants/action_types";
 import lbryuri from "lbryuri";
 import { doResolveUri } from "redux/actions/content";
 import { doNavigate } from "redux/actions/navigation";
 import { selectCurrentPage } from "redux/selectors/navigation";
 import batchActions from "util/batchActions";
+
+const handleResponse = response => {
+  return response.status === 200
+    ? Promise.resolve(response.json())
+    : Promise.reject(new Error(response.statusText));
+};
 
 export function doSearch(rawQuery) {
   return function(dispatch, getState) {
@@ -14,12 +20,12 @@ export function doSearch(rawQuery) {
 
     if (!query) {
       return dispatch({
-        type: types.SEARCH_CANCELLED,
+        type: actions.SEARCH_CANCELLED,
       });
     }
 
     dispatch({
-      type: types.SEARCH_STARTED,
+      type: actions.SEARCH_STARTED,
       data: { query },
     });
 
@@ -27,11 +33,7 @@ export function doSearch(rawQuery) {
       dispatch(doNavigate("search", { query: query }));
     } else {
       fetch("https://lighthouse.lbry.io/search?s=" + query)
-        .then(response => {
-          return response.status === 200
-            ? Promise.resolve(response.json())
-            : Promise.reject(new Error(response.statusText));
-        })
+        .then(handleResponse)
         .then(data => {
           let uris = [];
           let actions = [];
@@ -46,7 +48,7 @@ export function doSearch(rawQuery) {
           });
 
           actions.push({
-            type: types.SEARCH_COMPLETED,
+            type: actions.SEARCH_COMPLETED,
             data: {
               query,
               uris,
@@ -56,7 +58,7 @@ export function doSearch(rawQuery) {
         })
         .catch(err => {
           dispatch({
-            type: types.SEARCH_CANCELLED,
+            type: actions.SEARCH_CANCELLED,
           });
         });
     }
@@ -72,17 +74,38 @@ export const updateSearchQuery = searchQuery => {
   }
 
   return {
-    type: types.UPDATE_SEARCH_QUERY,
+    type: actions.UPDATE_SEARCH_QUERY,
     data: { searchQuery, searchUri },
   };
 };
 
+export const getSearchSuggestions = query => dispatch => {
+  console.log("start");
+  dispatch({ type: actions.GET_SEARCH_SUGGESTIONS_START });
+
+  // need to handle spaces?
+  return fetch("https://lighthouse.lbry.io/autocomplete?s=" + query)
+    .then(handleResponse)
+    .then(suggestions => {
+      return dispatch({
+        type: actions.GET_SEARCH_SUGGESTIONS_SUCCESS,
+        data: suggestions.slice(0, 5),
+      });
+    })
+    .catch(err =>
+      dispatch({
+        type: actions.GET_SEARCH_SUGGESTIONS_FAIL,
+        data: err,
+      })
+    );
+};
+
 export const toggleActiveSearch = isActive => ({
-  type: types.TOGGLE_ACTIVE_SEARCH,
+  type: actions.TOGGLE_ACTIVE_SEARCH,
   data: isActive,
 });
 
 export const toggleActiveSearchTyping = isActive => ({
-  type: types.TOGGLE_ACTIVE_SEARCH_TYPING,
+  type: actions.TOGGLE_ACTIVE_SEARCH_TYPING,
   data: isActive,
 });

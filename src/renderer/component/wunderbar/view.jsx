@@ -3,6 +3,7 @@ import lbryuri from "lbryuri.js";
 import { Icon } from "component/common.js";
 import { parseQueryParams } from "util/query_params";
 import classnames from "classnames";
+import Link from "component/link";
 
 // type Props = {
 //   onSearch: () => void,
@@ -52,6 +53,7 @@ class WunderBar extends React.PureComponent {
       updateSearchQuery,
       isActivelySearching,
       toggleActiveSearchTyping,
+      getSearchSuggestions,
     } = this.props;
 
     if (!isActivelySearching) {
@@ -67,7 +69,9 @@ class WunderBar extends React.PureComponent {
     updateSearchQuery(value);
 
     this._userTypingTimer = setTimeout(() => {
-      // pull suggested search results/autocomplete value (same api call for both?)
+      if (value) {
+        getSearchSuggestions(value);
+      }
     }, WunderBar.TYPING_TIMEOUT); // 800ms delay, tweak for faster/slower
   }
 
@@ -81,13 +85,13 @@ class WunderBar extends React.PureComponent {
     toggleActiveSearch(true);
   }
 
-  onBlur() {
+  onBlur(e) {
     const { toggleActiveSearch } = this.props;
 
     if (this._userTypingTimer) {
       clearTimeout(this._userTypingTimer);
     }
-
+    debugger;
     toggleActiveSearch(false);
   }
 
@@ -98,12 +102,16 @@ class WunderBar extends React.PureComponent {
       isActive,
       address,
       isActivelySearching,
+      searchingForSuggestions,
+      suggestions,
     } = this.props;
 
     const wunderbarValue = isActivelySearching
       ? searchQuery
       : searchQuery || address;
-    console.log("render", this.props);
+
+    // debugger;
+
     return (
       <div
         className={classnames("header__wunderbar", {
@@ -126,7 +134,20 @@ class WunderBar extends React.PureComponent {
           {searchQuery &&
             isActive && (
               <ul>
-                {searchUri && <li className="wunderbar__uri">{searchUri}</li>}
+                {searchUri && (
+                  <li key="-2">
+                    <Link noStyle navigate="/show" params={{ uri: searchUri }}>
+                      {searchUri}
+                    </Link>
+                  </li>
+                )}
+                {searchUri && <li key="-1">View search results</li>}
+                {searchingForSuggestions && <li key="0">Searching...</li>}
+                {!searchingForSuggestions &&
+                  !!suggestions.length &&
+                  suggestions.map((suggestion, index) => {
+                    return <li key={index}>{suggestion}</li>;
+                  })}
               </ul>
             )}
         </div>

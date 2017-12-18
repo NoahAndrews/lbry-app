@@ -23,12 +23,14 @@ const Link = props => {
     alt,
     circle,
     flat,
+    noStyle,
   } = props;
 
   const combinedClassName = classnames(
     {
-      btn: true, // add way to disable this for links
-      "btn--primary": !alt,
+      btn: !noStyle,
+      "btn--no-style": noStyle,
+      "btn--primary": !noStyle && !alt,
       "btn--alt": alt,
       "btn--inverse": inverse,
       "btn--disabled": disabled,
@@ -54,7 +56,6 @@ const Link = props => {
       {iconRight && <Icon icon={iconRight} fixed={true} />}
     </span>
   );
-
 
   // const linkProps = {
   //   className: combinedClassName,

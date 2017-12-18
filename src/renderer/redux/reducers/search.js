@@ -7,6 +7,8 @@ const defaultState = {
   searchQuery: "",
   searchUri: "",
   isActivelySearching: false,
+  searchingForSuggestions: false,
+  suggestions: [],
 };
 
 export default handleActions(
@@ -42,11 +44,31 @@ export default handleActions(
       ...state,
       searchQuery: action.data.searchQuery,
       searchUri: action.data.searchUri,
+      suggestions: [],
     }),
 
     [actions.TOGGLE_ACTIVE_SEARCH_TYPING]: (state, action) => ({
       ...state,
       isActivelySearching: action.data,
+    }),
+
+    [actions.GET_SEARCH_SUGGESTIONS_START]: (state, action) => {
+      console.log("got it", action);
+      return {
+        ...state,
+        searchingForSuggestions: true,
+        suggestions: [],
+      };
+    },
+    [actions.GET_SEARCH_SUGGESTIONS_SUCCESS]: (state, action) => ({
+      ...state,
+      searchingForSuggestions: false,
+      suggestions: action.data,
+    }),
+    [actions.GET_SEARCH_SUGGESTIONS_FAIL]: (state, error) => ({
+      ...state,
+      searchingForSuggestions: false,
+      error,
     }),
 
     // clear the searchQuery on back/forward

@@ -34,7 +34,7 @@ button.btn {
   }
 }
 
-button.btn--alt {
+button.btn.btn--alt {
   color: var(--btn-alt-color);
   background-color: #efefef;
 
@@ -65,6 +65,12 @@ button.btn.btn--inverse {
   box-shadow: none;
   background-color: transparent;
   color: var(--btn-primary-bg);
+}
+
+button.btn--no-style {
+  padding: 0;
+  margin: 0;
+  background-color: inherit;
 }
 
 

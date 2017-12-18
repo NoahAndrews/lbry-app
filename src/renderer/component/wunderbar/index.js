@@ -10,6 +10,7 @@ import {
   updateSearchQuery,
   toggleActiveSearch,
   toggleActiveSearchTyping,
+  getSearchSuggestions,
 } from "redux/actions/search";
 import Wunderbar from "./view";
 
@@ -28,6 +29,7 @@ const perform = dispatch => ({
   toggleActiveSearch: isActive => dispatch(toggleActiveSearch(isActive)),
   toggleActiveSearchTyping: isTyping =>
     dispatch(toggleActiveSearchTyping(isTyping)),
+  getSearchSuggestions: query => dispatch(getSearchSuggestions(query)),
 });
 
 export default connect(select, perform)(Wunderbar);
